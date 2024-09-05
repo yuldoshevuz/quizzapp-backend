@@ -1,0 +1,64 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+model User {
+  id          String   @id @default(uuid())
+  fullName    String
+  telegramId  String
+  phoneNumber String
+  cards       Card[]
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+
+  @@unique([id, telegramId])
+  @@map("users")
+}
+
+model Card {
+  id         String     @id @default(uuid())
+  author     User       @relation(fields: [authorId], references: [id])
+  authorId   String
+  title      String
+  slug       String
+  categoryId String
+  category   Category   @relation(fields: [categoryId], references: [id])
+  items      CardItem[]
+  createdAt  DateTime   @default(now())
+  updatedAt  DateTime   @updatedAt
+
+  @@unique([id, authorId, slug, title])
+  @@map("cards")
+}
+
+model CardItem {
+  id         String   @id @default(uuid())
+  term       String
+  definition String
+  cardId     String
+  card       Card     @relation(fields: [cardId], references: [id])
+  createdAt  DateTime @default(now())
+  updatedAt  DateTime @updatedAt
+
+  @@unique([id, cardId, term, definition])
+  @@map("card_items")
+}
+
+model Category {
+  id        String     @id @default(uuid())
+  title     String
+  parentId  String?
+  parent    Category?  @relation("category_to_parent", fields: [parentId], references: [id])
+  children  Category[] @relation("category_to_parent")
+  cards     Card[]
+  createdAt DateTime   @default(now())
+  updatedAt DateTime   @updatedAt
+
+  @@unique([id, parentId, title])
+  @@map("categories")
+}
