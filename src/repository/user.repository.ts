@@ -1,22 +1,26 @@
 import { Injectable } from "@nestjs/common";
-import { Prisma, User } from "@prisma/client";
+import { Prisma } from "@prisma/client";
 import { PrismaService } from "src/common/services/prisma.service";
-import { UserInfo } from "../common/interfaces/user.interface";
+import { User } from "./interfaces/user.interface";
 
 @Injectable()
 class UserRepository {
     constructor(private readonly prismaService: PrismaService) {}
     
-    async create(data: Prisma.UserCreateWithoutCardsInput): Promise<UserInfo> {
+    async create(data: Prisma.UserCreateWithoutCardsInput): Promise<User> {
         return await this.prismaService.user.create({ select: this.select(), data });
     }
 
-    async findOne(where: Prisma.UserWhereInput): Promise<UserInfo | null> {
+    async findOne(where: Prisma.UserWhereInput): Promise<User | null> {
         return this.prismaService.user.findFirst({ select: this.select(), where });
     }
 
-    async findById(userId: string): Promise<UserInfo | null> {
+    async findById(userId: string): Promise<User | null> {
         return await this.findOne({ id: userId });
+    }
+
+    async findByTelegramId(telegramId: string): Promise<User | null> {
+        return await this.findOne({ telegramId });
     }
 
     private select(): Prisma.UserSelect {
@@ -24,16 +28,7 @@ class UserRepository {
             id: true,
             fullName: true,
             telegramId: true,
-            phoneNumber: true,
-            cards: {
-                select: {
-                    id: true,
-                    title: true,
-                    slug: true,
-                    createdAt: true,
-                    updatedAt: true
-                }
-            },
+            role: true,
             createdAt: true,
             updatedAt: true
         }

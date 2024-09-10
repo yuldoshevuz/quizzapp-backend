@@ -9,7 +9,7 @@ export class HttpExceptionFilter implements ExceptionFilter {
         const ctx = host.switchToHttp();
         const request = ctx.getRequest<Request>();
         const response = ctx.getResponse<Response>();
-        const status = exception.getStatus();
+        const status = exception.getStatus();        
 
         const validationErrors = exception instanceof ValidationException? exception.validationErrors : null;
 

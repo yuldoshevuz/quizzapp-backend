@@ -3,25 +3,30 @@ import { AppModule } from './app.module';
 import { ValidationError, ValidationPipe } from '@nestjs/common';
 import { ValidationException } from './common/exceptions/validation.exception';
 import { HttpExceptionFilter } from './common/filters/http-exception.filter';
+import './bot/bot';
 
 async function bootstrap() {
-  const app = await NestFactory.create(AppModule);
-  app.useGlobalFilters(new HttpExceptionFilter())
-  app.useGlobalPipes(
-    new ValidationPipe({
-      exceptionFactory: (validationError: ValidationError[]) => {
-        const errors = validationError.map(error => ({
-          property: error.property,
-          constraints: error.constraints
-        }));
+    const app = await NestFactory.create(AppModule);
 
-        return new ValidationException(errors);
-      },
-      stopAtFirstError: true
-    })
-  );
+    app.useGlobalFilters(new HttpExceptionFilter());
 
+    app.useGlobalPipes(
+        new ValidationPipe({
+            exceptionFactory: (validationError: ValidationError[]) => {
+                const errors = validationError.map(({ property, constraints, children }) => ({
+                    property, constraints,
+                    children: children.map(({ property, constraints }) => ({
+                        property, constraints
+                    }))
+                }));
 
-  await app.listen(3000);
+                return new ValidationException(errors);
+            },
+            stopAtFirstError: true
+        })
+    );
+
+    await app.listen(3000);
+
 }
 bootstrap();
