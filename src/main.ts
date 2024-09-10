@@ -3,7 +3,10 @@ import { AppModule } from './app.module';
 import { ValidationError, ValidationPipe } from '@nestjs/common';
 import { ValidationException } from './common/exceptions/validation.exception';
 import { HttpExceptionFilter } from './common/filters/http-exception.filter';
+import * as dotenv from 'dotenv';
 import './bot/bot';
+
+dotenv.config();
 
 async function bootstrap() {
     const app = await NestFactory.create(AppModule);
@@ -26,7 +29,6 @@ async function bootstrap() {
         })
     );
 
-    await app.listen(3000);
-
+    await app.listen(process.env.PORT || 4565);
 }
 bootstrap();
