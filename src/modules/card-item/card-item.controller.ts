@@ -5,7 +5,7 @@ import { CheckAnswerInputDto } from "./dto/check-answer-input.dto";
 import { TestAnswerInputDto } from "./dto/test-answer-input.dto";
 import { FileInterceptor } from "@nestjs/platform-express";
 import { CheckAnswerImageDto } from "./dto/check-answer-image.dto";
-import { FileUploadService } from "../file-upload/file-upload.service";
+import { FileUploadService } from "../../common/services/file-upload.service";
 
 @Controller('card-item')
 @Auth()
