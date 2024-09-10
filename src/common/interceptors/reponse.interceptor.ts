@@ -2,8 +2,7 @@ import { CallHandler, ExecutionContext, Injectable, NestInterceptor } from "@nes
 import { Request, Response } from "express";
 import { Observable } from "rxjs";
 import { ResponseDto } from "../dto/response.dto";
-import axios from "axios";
-import { map, switchMap } from "rxjs/operators";
+import { map } from "rxjs/operators";
 
 @Injectable()
 export class ResponseInterceptor implements NestInterceptor {
