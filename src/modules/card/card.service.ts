@@ -19,6 +19,11 @@ export class CardService {
         const authorId = req.user.id;
         const slug = this.slugger(dto.title);
 
+        if (dto.categoryId) {
+            const existsCategory = await this.categoryRepository.findById(dto.categoryId, authorId);
+            if (!existsCategory) throw new BadRequestException('Category not available with this id');
+        }
+
         const newCard = await this.cardRepository.create({ ...dto, authorId, slug });
 
         return { card: { ...newCard, shareLink: this.shareLink(newCard.slug) } };
@@ -27,7 +32,6 @@ export class CardService {
     async updateById(cardId: string, dto: UpdateCardDto, req: RequestWithUser): Promise<CardDataResponseDto> {
         const { title, categoryId } = dto;
         const authorId = req.user.id;
-
 
         if (categoryId) {
             const existsCategory = await this.categoryRepository.findById(categoryId, authorId);
