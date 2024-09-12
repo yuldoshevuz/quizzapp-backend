@@ -3,6 +3,8 @@ import { AppModule } from './app.module';
 import { ValidationError, ValidationPipe } from '@nestjs/common';
 import { ValidationException } from './common/exceptions/validation.exception';
 import { HttpExceptionFilter } from './common/filters/http-exception.filter';
+import { setupSwagger } from './common/swagger/swagger';
+import * as cors from 'cors';
 import * as dotenv from 'dotenv';
 import './bot/bot';
 
@@ -10,6 +12,7 @@ dotenv.config();
 
 async function bootstrap() {
     const app = await NestFactory.create(AppModule);
+    app.use(cors());
 
     app.setGlobalPrefix('api');
 
@@ -30,6 +33,8 @@ async function bootstrap() {
             stopAtFirstError: true
         })
     );
+
+    setupSwagger(app);
 
     await app.listen(process.env.PORT || 4565);
 }

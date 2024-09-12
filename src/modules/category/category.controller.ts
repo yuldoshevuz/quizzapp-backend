@@ -27,6 +27,7 @@ export class CategoryController {
     }
 
     @Put(':categoryId')
+    @Auth('ADMIN')
     async updateCategory(@Param('categoryId') categoryId: string, @Req() req:RequestWithUser, @Body() dto: UpdateCategoryDto) {
         return this.categoryService.update(categoryId, dto, req);
     }
