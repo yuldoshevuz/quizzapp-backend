@@ -4412,7 +4412,7 @@
                 }
             ],
             "put": {
-                "summary": "Update Category By Id",
+                "summary": "Update Category By Id (ADMIN)",
                 "tags": [
                     "Category"
                 ],
@@ -4693,7 +4693,7 @@
                 }
             },
             "delete": {
-                "summary": "Your DELETE endpoint",
+                "summary": "Delete Category (ADMIN)",
                 "tags": [
                     "Category"
                 ],

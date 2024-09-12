@@ -33,6 +33,7 @@ export class CategoryController {
     }
 
     @Delete(':categoryId')
+    @Auth('ADMIN')
     async deleteCategory(@Param('categoryId') categoryId: string) {
         return this.categoryService.delete(categoryId);
     }
