@@ -3218,7 +3218,7 @@
         },
         "/api/card-item/check/image": {
             "post": {
-                "summary": "Your POST endpoint",
+                "summary": "Check Card Item Answer From Image",
                 "tags": [
                     "Card Items"
                 ],
