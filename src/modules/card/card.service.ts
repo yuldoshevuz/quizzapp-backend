@@ -66,7 +66,7 @@ export class CardService {
         
         if (!card) throw new NotFoundException('Card not found');
 
-        return { card: { ...card, shareLink: this.shareLink(card.title) } };
+        return { card: { ...card, shareLink: this.shareLink(card.slug) } };
     }
 
     async getMyById(cardId: string, req: RequestWithUser): Promise<CardDataResponseDto> {
