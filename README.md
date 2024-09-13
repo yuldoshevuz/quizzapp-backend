@@ -251,9 +251,6 @@ This project is **UNLICENSED**.
 ---
 
 💡 **QuizApp Backend** — Powered by **NestJS**, **Prisma**, and **JWT**.
-```
-
----
 
 ### Key Additions:
 1. **Expanded API Documentation**: Includes a brief description and sample request/response bodies for key endpoints.
