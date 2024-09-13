@@ -1,13 +1,6 @@
-Here's the complete `README.md` documentation for the **QuizApp Backend** project, designed for clear structure and enhanced presentation:
-
----
-
-```markdown
 # 🎓 QuizApp Backend API
 
 Welcome to the **QuizApp Backend**, a comprehensive API for managing users, quizzes, and cards in the QuizApp platform. Built with **NestJS**, **Prisma**, and **JWT** for authentication, this backend is designed for efficiency, scalability, and developer productivity.
-
----
 
 ## 📋 Table of Contents
 
