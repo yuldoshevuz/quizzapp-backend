@@ -14,10 +14,16 @@ export class CardRepository {
     private readonly cardItemRepository: CardItemRepository,
   ) {}
 
-  async findAll(where: Prisma.CardWhereInput): Promise<Card[]> {
+  async findAll(
+    where: Prisma.CardWhereInput,
+    orderBy: Prisma.CardOrderByWithAggregationInput = {},
+    take: number = undefined
+  ): Promise<Card[]> {
     return this.prismaService.card.findMany({
       select: { ...this.select(), items: false },
+      orderBy,
       where,
+      take
     });
   }
 
@@ -32,7 +38,7 @@ export class CardRepository {
   }
 
   async create(data: CreateCard): Promise<Card> {
-    const { title, slug, authorId, categoryId, items } = data;
+    const { title, slug, authorId, categoryId, isPublic, items } = data;
     return this.prismaService.card.create({
       select: this.select(),
       data: {
@@ -40,6 +46,7 @@ export class CardRepository {
         slug,
         authorId,
         categoryId,
+        isPublic,
         items: { createMany: { data: items } },
       },
     });
@@ -58,6 +65,17 @@ export class CardRepository {
       where: { id: cardId },
       data,
     });
+  }
+
+  async incrementCardViews(slug: string): Promise<Card> {
+    const card = await this.findOne({ slug, isPublic: true });
+    if (!card) throw new NotFoundException('Card not found');
+
+    return await this.prismaService.card.update({
+      select: this.select(),
+      where: { id: card.id },
+      data: { views: { increment: 1 } }
+    })
   }
 
   async deleteById(cardId: string, authorId: string): Promise<void> {
@@ -83,6 +101,8 @@ export class CardRepository {
       slug: true,
       authorId: true,
       categoryId: true,
+      isPublic: true,
+      views: true,
       createdAt: true,
       updatedAt: true,
       items: { select: this.cardItemRepository.select(answer) },

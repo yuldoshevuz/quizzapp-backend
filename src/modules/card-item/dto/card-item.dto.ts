@@ -16,5 +16,3 @@ export class CardItemCheckDto {
   answer: string;
   hint: string;
 }
-
-export type AnswerDto = 'true' | 'false';

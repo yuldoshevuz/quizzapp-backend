@@ -5,17 +5,14 @@ import {
   Body,
   Param,
   Delete,
-  UseGuards,
   Req,
   Put,
-  Query,
 } from '@nestjs/common';
 import { CardService } from './card.service';
 import { RequestWithUser } from 'src/common/interfaces/request-with-user.interface';
 import { CreateCardDto } from './dto/create-card.dto';
 import { Auth } from '../auth/decorators/auth.decorator';
 import { UpdateCardDto } from './dto/update-card.dto';
-import { AnswerDto } from '../card-item/dto/card-item.dto';
 import { CreateCardItemDto } from '../card-item/dto/create-card-item.dto';
 
 @Controller('card')
@@ -31,12 +28,26 @@ export class CardController {
     return this.cardService.create(createCardDto, req);
   }
 
+  @Get()
+  async getAll() {
+    return this.cardService.getAll();
+  }
+
+  @Get('popular')
+  async getPopular() {
+    return this.cardService.getPopular();
+  }
+
+  @Get('recent')
+  async getRecent() {
+    return this.cardService.getRecent();
+  }
+
   @Get('slug/:slug')
   async getBySlug(
-    @Param('slug') slug: string,
-    @Query('answer') answer: AnswerDto,
+    @Param('slug') slug: string
   ) {
-    return this.cardService.getBySlug(slug, answer);
+    return this.cardService.getBySlug(slug);
   }
 
   @Get('my')

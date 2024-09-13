@@ -2,6 +2,7 @@ import { Type } from 'class-transformer';
 import {
   ArrayMinSize,
   IsArray,
+  IsBoolean,
   IsNotEmpty,
   IsOptional,
   IsString,
@@ -13,6 +14,10 @@ export class CreateCardDto {
   @IsString()
   @IsNotEmpty()
   title: string;
+
+  @IsBoolean()
+  @IsNotEmpty()
+  isPublic: boolean;
 
   @IsString()
   @IsOptional()

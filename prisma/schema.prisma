@@ -31,6 +31,8 @@ model Card {
   authorId   String
   title      String
   slug       String
+  views      Int        @default(1)
+  isPublic   Boolean    @default(false)
   categoryId String?
   category   Category?  @relation(fields: [categoryId], references: [id], onDelete: SetNull)
   items      CardItem[]

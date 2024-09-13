@@ -8,7 +8,6 @@ import { RequestWithUser } from 'src/common/interfaces/request-with-user.interfa
 import { CreateCardDto } from './dto/create-card.dto';
 import { CardDataResponseDto, CardsDataResponseDto } from './dto/card.dto';
 import { UpdateCardDto } from './dto/update-card.dto';
-import { AnswerDto } from '../card-item/dto/card-item.dto';
 import { CategoryRepository } from 'src/repository/category.repository';
 import { CreateCardItem } from 'src/repository/interfaces/card.item.interface';
 
@@ -34,7 +33,7 @@ export class CardService {
       if (!existsCategory)
         throw new BadRequestException('Category not available with this id');
     }
-
+    
     const newCard = await this.cardRepository.create({
       ...dto,
       authorId,
@@ -49,7 +48,7 @@ export class CardService {
     dto: UpdateCardDto,
     req: RequestWithUser,
   ): Promise<CardDataResponseDto> {
-    const { title, categoryId } = dto;
+    const { title, categoryId, isPublic } = dto;
     const authorId = req.user.id;
 
     if (categoryId) {
@@ -64,6 +63,7 @@ export class CardService {
     const updatedCard = await this.cardRepository.updateById(cardId, authorId, {
       title,
       categoryId,
+      isPublic,
       slug: title ? this.slugger(title) : undefined,
     });
 
@@ -76,6 +76,18 @@ export class CardService {
     const authorId = req.user.id;
     await this.cardRepository.deleteById(cardId, authorId);
     return null;
+  }
+
+  async getAll(): Promise<CardsDataResponseDto> {
+    const cards = await this.cardRepository.findAll({ isPublic: true });
+    if (!cards.length) throw new NotFoundException('No cards found');
+
+    return {
+      cards: cards.map((card) => ({
+        ...card,
+        shareLink: this.shareLink(card.slug)
+      }))
+    }
   }
 
   async getMy(req: RequestWithUser): Promise<CardsDataResponseDto> {
@@ -92,15 +104,33 @@ export class CardService {
     };
   }
 
-  async getBySlug(
-    slug: string,
-    answer: AnswerDto,
-  ): Promise<CardDataResponseDto> {
-    const card = await this.cardRepository.findOne({ slug }, answer === 'true');
-
-    if (!card) throw new NotFoundException('Card not found');
-
+  async getBySlug(slug: string): Promise<CardDataResponseDto> {
+    const card = await this.cardRepository.incrementCardViews(slug)
     return { card: { ...card, shareLink: this.shareLink(card.slug) } };
+  }
+
+  async getPopular(): Promise<CardsDataResponseDto> {
+    const cards = await this.cardRepository.findAll({isPublic: true }, { views: 'desc' }, 10);
+    if (!cards.length) throw new NotFoundException('No cards found');
+
+    return {
+      cards: cards.map((card) => ({
+        ...card,
+        shareLink: this.shareLink(card.slug)
+      }))
+    }
+  }
+
+  async getRecent(): Promise<CardsDataResponseDto> {
+    const cards = await this.cardRepository.findAll({ isPublic: true }, { createdAt: 'desc' }, 10);
+    if (!cards.length) throw new NotFoundException('No cards found');
+
+    return {
+      cards: cards.map((card) => ({
+        ...card,
+        shareLink: this.shareLink(card.slug)
+      }))
+    }
   }
 
   async getMyById(
