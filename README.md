@@ -43,13 +43,16 @@ Create a `.env` file in the root directory and set the following environment var
 
 ```plaintext
 DATABASE_URL=postgres://<username>:<password>@localhost:5432/quizapp
+BASE_URL=http://localhost:3000
+PORT=5000
 JWT_SECRET=your-secret-key
-PORT=3000
+JWT_EXPIRES_IN=15m
+BOT_TOKEN=your-telegram-bot-boken
+WEBAPP_URL=your-telegram-webapp-url
+DEFAULT_PROFILE_PHOTO=https://t4.ftcdn.net/jpg/00/64/67/27/360_F_64672736_U5kpdGs9keUll8CRQ3p3YaEv2M6qkVY5.jpg
 ```
 
-- **`DATABASE_URL`**: The PostgreSQL database connection string.
-- **`JWT_SECRET`**: Secret key for signing JWT tokens.
-- **`PORT`**: The port on which the application will run (default is `3000`).
+**You can set environment variables like example.env file**
 
 ---
 
@@ -102,14 +105,6 @@ Here are the key NPM scripts available for various tasks:
     ```
 
     This compiles the application using the NestJS CLI.
-
-- **Run Linter**:
-
-    ```bash
-    npm run lint
-    ```
-
-    Automatically fixes linting issues in the codebase using **ESLint**.
 
 - **Run in Debug Mode**:
 
@@ -211,10 +206,6 @@ The project follows a modular architecture for maintainability:
 ├── tsconfig.json          # TypeScript project configuration
 └── .env                   # Environment variables
 
-```
-
-```bash
-npm run test
 ```
 
 ## 🔧 Troubleshooting

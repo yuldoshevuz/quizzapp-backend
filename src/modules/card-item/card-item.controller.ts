@@ -4,7 +4,7 @@ import {
   Body,
   UseInterceptors,
   UploadedFile,
-  ParseFilePipe
+  ParseFilePipe,
 } from '@nestjs/common';
 import { Auth } from '../auth/decorators/auth.decorator';
 import { CardItemService } from './card-item.service';
