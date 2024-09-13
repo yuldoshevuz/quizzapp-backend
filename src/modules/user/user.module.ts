@@ -8,6 +8,6 @@ import { PhotoModule } from '../photo/photo.module';
 @Module({
   imports: [ConfigModule, RepositoryModule, PhotoModule],
   controllers: [UserController],
-  providers: [UserService]
+  providers: [UserService],
 })
 export class UserModule {}

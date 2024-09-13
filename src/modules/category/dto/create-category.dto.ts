@@ -1,11 +1,11 @@
-import { IsNotEmpty, IsOptional, IsString } from "class-validator";
+import { IsNotEmpty, IsOptional, IsString } from 'class-validator';
 
 export class CreateCategoryDto {
-    @IsString()
-    @IsNotEmpty()
-    title: string;
+  @IsString()
+  @IsNotEmpty()
+  title: string;
 
-    @IsString()
-    @IsOptional()
-    parentId?: string;
+  @IsString()
+  @IsOptional()
+  parentId?: string;
 }

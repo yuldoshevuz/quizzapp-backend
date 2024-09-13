@@ -16,11 +16,11 @@ import { JwtAuthGuard } from './guards/auth.guard';
     JwtModule.registerAsync({
       imports: [ConfigModule],
       inject: [ConfigService],
-      useFactory: jwtConfig
-    })
+      useFactory: jwtConfig,
+    }),
   ],
   controllers: [AuthController],
   providers: [AuthService, JwtAuthGuard],
-  exports: [JwtAuthGuard]
+  exports: [JwtAuthGuard],
 })
-export class AuthModule { }
+export class AuthModule {}

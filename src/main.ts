@@ -11,31 +11,35 @@ import './bot/bot';
 dotenv.config();
 
 async function bootstrap() {
-    const app = await NestFactory.create(AppModule);
-    app.use(cors());
+  const app = await NestFactory.create(AppModule);
+  app.use(cors());
 
-    app.setGlobalPrefix('api');
+  app.setGlobalPrefix('api');
 
-    app.useGlobalFilters(new HttpExceptionFilter());
+  app.useGlobalFilters(new HttpExceptionFilter());
 
-    app.useGlobalPipes(
-        new ValidationPipe({
-            exceptionFactory: (validationError: ValidationError[]) => {
-                const errors = validationError.map(({ property, constraints, children }) => ({
-                    property, constraints,
-                    children: children.map(({ property, constraints }) => ({
-                        property, constraints
-                    }))
-                }));
+  app.useGlobalPipes(
+    new ValidationPipe({
+      exceptionFactory: (validationError: ValidationError[]) => {
+        const errors = validationError.map(
+          ({ property, constraints, children }) => ({
+            property,
+            constraints,
+            children: children.map(({ property, constraints }) => ({
+              property,
+              constraints,
+            })),
+          }),
+        );
 
-                return new ValidationException(errors);
-            },
-            stopAtFirstError: true
-        })
-    );
+        return new ValidationException(errors);
+      },
+      stopAtFirstError: true,
+    }),
+  );
 
-    setupSwagger(app);
+  setupSwagger(app);
 
-    await app.listen(process.env.PORT || 4565);
+  await app.listen(process.env.PORT || 4565);
 }
 bootstrap();

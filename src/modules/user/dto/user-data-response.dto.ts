@@ -1,5 +1,5 @@
-import { User } from "src/repository/interfaces/user.interface";
+import { User } from 'src/repository/interfaces/user.interface';
 
 export class UserDataResponseDto {
-    user: User;
+  user: User;
 }

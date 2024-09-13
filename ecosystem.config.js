@@ -1,8 +1,8 @@
 module.exports = {
-    apps: [
-        {
-            name: 'quizapp-backend',
-            script: 'dist/main.js'
-        },
-    ],
+  apps: [
+    {
+      name: 'quizapp-backend',
+      script: 'dist/main.js',
+    },
+  ],
 };

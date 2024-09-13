@@ -5,10 +5,10 @@ import { UserResponseDataDto } from './dto/user-response.dto';
 
 @Controller('auth')
 export class AuthController {
-    constructor(private readonly authService: AuthService) {}
-    
-    @Post()
-    async auth(@Body() dto: AuthUserDto): Promise<UserResponseDataDto> {
-        return this.authService.authenticationUser(dto)
-    }
+  constructor(private readonly authService: AuthService) {}
+
+  @Post()
+  async auth(@Body() dto: AuthUserDto): Promise<UserResponseDataDto> {
+    return this.authService.authenticationUser(dto);
+  }
 }

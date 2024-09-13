@@ -1,20 +1,20 @@
 export class CardItemTestDto {
-    cardId: string;
-    cardItemId: string;
-    term: string;
-    options: CardItemTestOptions[];
+  cardId: string;
+  cardItemId: string;
+  term: string;
+  options: CardItemTestOptions[];
 }
 
 export class CardItemTestOptions {
-    id: string;
-    answer: string;
+  id: string;
+  answer: string;
 }
 
 export class CardItemCheckDto {
-    correct: boolean;
-    yours: string;
-    answer: string;
-    hint: string;
+  correct: boolean;
+  yours: string;
+  answer: string;
+  hint: string;
 }
 
-export type AnswerDto = "true" | "false";
+export type AnswerDto = 'true' | 'false';

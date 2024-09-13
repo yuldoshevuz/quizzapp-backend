@@ -1,6 +1,6 @@
-import { RoleUser } from "@prisma/client"
+import { RoleUser } from '@prisma/client';
 
 export class JwtPayload {
-    userId: string;
-    role: RoleUser
-};
+  userId: string;
+  role: RoleUser;
+}

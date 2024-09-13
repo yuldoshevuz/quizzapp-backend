@@ -8,18 +8,12 @@ import { CardModule } from './modules/card/card.module';
 import { CardItemModule } from './modules/card-item/card-item.module';
 
 @Module({
-    imports: [
-        UserModule,
-        AuthModule,
-        CategoryModule,
-        CardModule,
-        CardItemModule
-    ],
-    providers: [
-        {
-            provide: APP_INTERCEPTOR,
-            useClass: ResponseInterceptor
-        }
-    ]
+  imports: [UserModule, AuthModule, CategoryModule, CardModule, CardItemModule],
+  providers: [
+    {
+      provide: APP_INTERCEPTOR,
+      useClass: ResponseInterceptor,
+    },
+  ],
 })
-export class AppModule { }
+export class AppModule {}

@@ -8,15 +8,18 @@ import { RequestWithUser } from 'src/common/interfaces/request-with-user.interfa
 @Controller('user')
 @Auth()
 export class UserController {
-    constructor(private readonly userService: UserService) {}
+  constructor(private readonly userService: UserService) {}
 
-    @Get()
-    async getProfile(@Req() req: RequestWithUser): Promise<UserDataResponseDto> {
-        return await this.userService.getProfile(req);
-    }
+  @Get()
+  async getProfile(@Req() req: RequestWithUser): Promise<UserDataResponseDto> {
+    return await this.userService.getProfile(req);
+  }
 
-    @Get('photo')
-    async getProfilePhoto(@Req() req: RequestWithUser, @Res() res: Response): Promise<void> {
-        return await this.userService.getProfilePhoto(req, res);
-    }
+  @Get('photo')
+  async getProfilePhoto(
+    @Req() req: RequestWithUser,
+    @Res() res: Response,
+  ): Promise<void> {
+    return await this.userService.getProfilePhoto(req, res);
+  }
 }
