@@ -91,7 +91,8 @@ export class CardService {
       OR: [
         { title: { contains: searchValue, mode: 'insensitive' } },
         { slug:  { contains: searchValue, mode: 'insensitive' } }
-      ]
+      ],
+      isPublic: true
     }, { createdAt: 'desc' }, 5);
 
     if (!cards.length) throw new NotFoundException('No cards found');
