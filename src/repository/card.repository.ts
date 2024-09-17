@@ -3,28 +3,71 @@ import { PrismaService } from 'src/common/services/prisma.service';
 import { Prisma } from '@prisma/client';
 import { Card, CreateCard, UpdateCard } from './interfaces/card.interface';
 import { CardItemRepository } from './card-item.repository';
-import { CreateCardDto } from 'src/modules/card/dto/create-card.dto';
-import { UpdateCardDto } from 'src/modules/card/dto/update-card.dto';
 import { CreateCardItem } from './interfaces/card.item.interface';
+import { CardsDataResponseDto } from 'src/modules/card/dto/card.dto';
 
 @Injectable()
 export class CardRepository {
   constructor(
     private readonly prismaService: PrismaService,
-    private readonly cardItemRepository: CardItemRepository,
+    private readonly cardItemRepository: CardItemRepository
   ) {}
 
+  async count(where: Prisma.CardWhereInput = {}) {
+    return await this.prismaService.card.count({ where });
+  }
+
   async findAll(
-    where: Prisma.CardWhereInput,
+    where: Prisma.CardWhereInput = {},
     orderBy: Prisma.CardOrderByWithAggregationInput = {},
     take: number = undefined
   ): Promise<Card[]> {
+
     return this.prismaService.card.findMany({
       select: { ...this.select(), items: false },
       orderBy,
       where,
       take
     });
+  }
+
+  async findWithPagination(
+    where: Prisma.CardWhereInput = {},
+    pageSize: number = 10,
+    pageNumber: number = 0,
+    orderBy: Prisma.CardOrderByWithAggregationInput = {},
+  ): Promise<CardsDataResponseDto> {
+    const psz = Number.isNaN(pageSize)? 10 : pageSize;
+    const pnum = Number.isNaN(pageNumber)? 0 : pageNumber;
+
+    const skip =  psz && pnum;
+    const take = psz || 10;
+    
+    const totalItemsCount = await this.prismaService.card.count({ where });
+  
+    const cards = await this.prismaService.card.findMany({ where, skip, take, orderBy });
+  
+    return this.pagination(cards, psz, pnum || 0, totalItemsCount);
+  }
+  
+  private pagination(
+    cards: Card[], 
+    pageSize: number, 
+    pageNumber: number, 
+    totalItemsCount: number
+  ): CardsDataResponseDto {
+    return {
+      cards: cards.map(card => ({
+        ...card,
+        shareLink: this.shareLink(card.slug),
+      })),
+      pagination: {
+        currentPage: pageNumber,
+        pageSize: cards.length,
+        totalItems: totalItemsCount,
+        totalPages: Math.ceil(totalItemsCount / pageSize)
+      },
+    };
   }
 
   async findOne(
@@ -92,6 +135,10 @@ export class CardRepository {
   ): Promise<Card | null> {
     await this.prismaService.cardItem.create({ data: { ...data, cardId } });
     return this.findOne({ id: cardId, AND: { authorId } });
+  }
+
+  private shareLink(slug: string): string {
+    return `${process.env.BASE_URL}/api/card/slug/${slug}`;
   }
 
   public select(answer: boolean = false): Prisma.CardSelect {

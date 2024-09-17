@@ -1,3 +1,4 @@
+import { Prisma } from '@prisma/client';
 import { CardItem, CreateCardItem } from './card.item.interface';
 
 export interface Card {

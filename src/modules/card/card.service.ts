@@ -78,30 +78,35 @@ export class CardService {
     return null;
   }
 
-  async getAll(): Promise<CardsDataResponseDto> {
-    const cards = await this.cardRepository.findAll({ isPublic: true });
-    if (!cards.length) throw new NotFoundException('No cards found');
+  async getAll(pageSize: number, pageNumber: number): Promise<CardsDataResponseDto> {
+    const result = await this.cardRepository.findWithPagination({ isPublic: true }, pageSize, pageNumber, { createdAt: 'desc' });
 
-    return {
-      cards: cards.map((card) => ({
-        ...card,
-        shareLink: this.shareLink(card.slug)
-      }))
-    }
+    if (!result.cards.length) throw new NotFoundException('No cards found');
+
+    return result;
   }
 
-  async getMy(req: RequestWithUser): Promise<CardsDataResponseDto> {
-    const authorId = req.user.id;
-    const cards = await this.cardRepository.findAll({ authorId });
+  async searchByTitle(searchValue: string): Promise<CardsDataResponseDto> {
+    const cards = await this.cardRepository.findAll({
+      OR: [
+        { title: { contains: searchValue, mode: 'insensitive' } },
+        { slug:  { contains: searchValue, mode: 'insensitive' } }
+      ]
+    }, { createdAt: 'desc' }, 5);
 
     if (!cards.length) throw new NotFoundException('No cards found');
 
-    return {
-      cards: cards.map((card) => ({
-        ...card,
-        shareLink: this.shareLink(card.slug),
-      })),
-    };
+    return { cards: cards.map(card => ({ ...card, shareLink: this.shareLink(card.slug) })) };
+  }
+
+  async getMy(req: RequestWithUser, pageSize: number, pageNumber: number): Promise<CardsDataResponseDto> {
+    const authorId = req.user.id;
+    const result = await this.cardRepository.findWithPagination(
+      { authorId }, pageSize, pageNumber, { createdAt: 'desc' }
+    );
+    if (!result.cards.length) throw new NotFoundException('No cards found');
+
+    return result;
   }
 
   async getBySlug(slug: string): Promise<CardDataResponseDto> {
@@ -110,27 +115,19 @@ export class CardService {
   }
 
   async getPopular(): Promise<CardsDataResponseDto> {
-    const cards = await this.cardRepository.findAll({isPublic: true }, { views: 'desc' }, 10);
+    const cards = await this.cardRepository.findAll({ isPublic: true }, { views: 'desc' }, 10);
+
     if (!cards.length) throw new NotFoundException('No cards found');
 
-    return {
-      cards: cards.map((card) => ({
-        ...card,
-        shareLink: this.shareLink(card.slug)
-      }))
-    }
+    return { cards: cards.map(card => ({ ...card, shareLink: this.shareLink(card.slug) })) };
   }
 
   async getRecent(): Promise<CardsDataResponseDto> {
-    const cards = await this.cardRepository.findAll({ isPublic: true }, { createdAt: 'desc' }, 10);
+    const cards = await this.cardRepository.findAll({ isPublic: true }, { createdAt: 'desc' }, 10)
+
     if (!cards.length) throw new NotFoundException('No cards found');
 
-    return {
-      cards: cards.map((card) => ({
-        ...card,
-        shareLink: this.shareLink(card.slug)
-      }))
-    }
+    return { cards: cards.map(card => ({ ...card, shareLink: this.shareLink(card.slug) })) };
   }
 
   async getMyById(
@@ -170,6 +167,6 @@ export class CardService {
   }
 
   private shareLink(slug: string): string {
-    return `${process.env.BASE_URL}/card/slug/${slug}`;
+    return `${process.env.BASE_URL}/api/card/slug/${slug}`;
   }
 }

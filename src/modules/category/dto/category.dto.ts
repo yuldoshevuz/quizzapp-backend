@@ -1,3 +1,4 @@
+import { PaginationDto } from 'src/modules/card/dto/card.dto';
 import { Category } from 'src/repository/interfaces/category.interface';
 
 export class CategoryDataResponseDto {
@@ -6,4 +7,5 @@ export class CategoryDataResponseDto {
 
 export class CategoriesDataResponseDto {
   categories: Category[];
+  pagination?: PaginationDto;
 }

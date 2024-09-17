@@ -7,6 +7,7 @@ import {
   Delete,
   Req,
   Put,
+  Query,
 } from '@nestjs/common';
 import { CardService } from './card.service';
 import { RequestWithUser } from 'src/common/interfaces/request-with-user.interface';
@@ -29,8 +30,16 @@ export class CardController {
   }
 
   @Get()
-  async getAll() {
-    return this.cardService.getAll();
+  async getAll(
+    @Query('pageSize') pageSize: string,
+    @Query('pageNumber') pageNumber: string
+  ) {
+    return this.cardService.getAll(+pageSize, +pageNumber);
+  }
+
+  @Get('search')
+  async searchByTitle(@Query('title') title: string) {
+    return this.cardService.searchByTitle(title);
   }
 
   @Get('popular')
@@ -51,8 +60,12 @@ export class CardController {
   }
 
   @Get('my')
-  async getMy(@Req() req: RequestWithUser) {
-    return this.cardService.getMy(req);
+  async getMy(
+    @Req() req: RequestWithUser,
+    @Query('pageSize') pageSize: string,
+    @Query('pageNumber') pageNumber: string
+  ) {
+    return this.cardService.getMy(req, +pageSize, +pageNumber);
   }
 
   @Get('my/:cardId')
