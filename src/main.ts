@@ -3,10 +3,10 @@ import { AppModule } from './app.module';
 import { ValidationError, ValidationPipe } from '@nestjs/common';
 import { ValidationException } from './common/exceptions/validation.exception';
 import { HttpExceptionFilter } from './common/filters/http-exception.filter';
-import { setupSwagger } from './common/swagger/swagger';
 import * as cors from 'cors';
 import * as dotenv from 'dotenv';
 import './bot/bot';
+import { setupSwagger } from './config/swagger.config';
 
 dotenv.config();
 

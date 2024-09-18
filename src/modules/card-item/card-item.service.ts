@@ -40,11 +40,11 @@ export class CardItemService {
 
   async checkAnswerImage(dto: CheckAnswerImageDto) {
     try {
-      if (!fs.existsSync(dto.file.path))
+      if (!fs.existsSync(dto.image.path))
         throw new ValidationException('No text image found');
 
       const answer = await this.ocrService.processImage(
-        dto.file.path,
+        dto.image.path,
         dto.language,
       );
 
@@ -55,7 +55,7 @@ export class CardItemService {
     } catch (error) {
       throw new ValidationException(error);
     } finally {
-      await fs.promises.rm(dto.file.path, { recursive: true });
+      await fs.promises.rm(dto.image.path, { recursive: true });
     }
   }
 

@@ -13,14 +13,18 @@ import { Auth } from '../auth/decorators/auth.decorator';
 import { CreateCategoryDto } from './dto/create-category.dto';
 import { UpdateCategoryDto } from './dto/update-category.dto';
 import { RequestWithUser } from 'src/common/interfaces/request-with-user.interface';
+import { ApiBearerAuth, ApiOperation, ApiTags } from '@nestjs/swagger';
 
 @Controller('category')
+@ApiTags('Category')
+@ApiBearerAuth('access-token')
 @Auth()
 export class CategoryController {
   constructor(private readonly categoryService: CategoryService) {}
 
   @Post()
   @Auth('ADMIN')
+  @ApiOperation({ summary: 'Create New Category (admin)' })
   async createCategory(
     @Req() req: RequestWithUser,
     @Body() dto: CreateCategoryDto,
@@ -29,13 +33,15 @@ export class CategoryController {
   }
 
   @Get()
+  @ApiOperation({ summary: 'Get All Categories (user)' })
   async getAllCategories(@Req() req: RequestWithUser) {
     return this.categoryService.getAll(req);
   }
 
-  @Get(':categoryId')
+  @Get(':slug')
+  @ApiOperation({ summary: 'Get Category By Slug (user)' })
   async getCategoryBySlug(
-    @Param('categoryId') slug: string,
+    @Param('slug') slug: string,
     @Req() req: RequestWithUser,
   ) {
     return this.categoryService.getBySlug(slug, req);
@@ -43,6 +49,7 @@ export class CategoryController {
 
   @Put(':categoryId')
   @Auth('ADMIN')
+  @ApiOperation({ summary: 'Update Category (admin)' })
   async updateCategory(
     @Param('categoryId') categoryId: string,
     @Req() req: RequestWithUser,
@@ -53,6 +60,7 @@ export class CategoryController {
 
   @Delete(':categoryId')
   @Auth('ADMIN')
+  @ApiOperation({ summary: 'Delete Category (admin)' })
   async deleteCategory(@Param('categoryId') categoryId: string) {
     return this.categoryService.delete(categoryId);
   }

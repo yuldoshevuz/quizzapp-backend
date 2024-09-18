@@ -4,7 +4,7 @@ import {
   ExceptionFilter,
   HttpException,
 } from '@nestjs/common';
-import { Request, Response } from 'express';
+import { Response } from 'express';
 import { ValidationException } from '../exceptions/validation.exception';
 import { ErrorResponseDto } from '../dto/error-response.dto';
 
@@ -12,7 +12,6 @@ import { ErrorResponseDto } from '../dto/error-response.dto';
 export class HttpExceptionFilter implements ExceptionFilter {
   catch(exception: HttpException, host: ArgumentsHost) {
     const ctx = host.switchToHttp();
-    const request = ctx.getRequest<Request>();
     const response = ctx.getResponse<Response>();
     const status = exception.getStatus();
 
@@ -24,7 +23,6 @@ export class HttpExceptionFilter implements ExceptionFilter {
     return response.status(status).json(
       new ErrorResponseDto({
         statusCode: status,
-        path: request.url,
         message: exception.message,
         errors: validationErrors,
       }),

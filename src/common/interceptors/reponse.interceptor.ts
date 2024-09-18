@@ -4,7 +4,7 @@ import {
   Injectable,
   NestInterceptor,
 } from '@nestjs/common';
-import { Request, Response } from 'express';
+import { Response } from 'express';
 import { Observable } from 'rxjs';
 import { ResponseDto } from '../dto/response.dto';
 import { map } from 'rxjs/operators';
@@ -16,7 +16,6 @@ export class ResponseInterceptor implements NestInterceptor {
     next: CallHandler,
   ): Observable<any> | Promise<Observable<any>> {
     const ctx = context.switchToHttp();
-    const request = ctx.getRequest<Request>();
     const response = ctx.getResponse<Response>();
 
     return next
@@ -24,12 +23,7 @@ export class ResponseInterceptor implements NestInterceptor {
       .pipe(
         map(
           (data: unknown) =>
-            new ResponseDto(
-              response.statusCode,
-              request.url,
-              'Request successful',
-              data,
-            ),
+            new ResponseDto(response.statusCode, 'Request successful', data),
         ),
       );
   }
