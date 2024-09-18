@@ -31,9 +31,7 @@ export class CardController {
   }
 
   @Get()
-  async getAll(
-    @Query() query: CardsQuery
-  ) {
+  async getAll(@Query() query: CardsQuery) {
     return this.cardService.getAll(query.pageSize, query.pageNumber);
   }
 
@@ -53,17 +51,12 @@ export class CardController {
   }
 
   @Get('slug/:slug')
-  async getBySlug(
-    @Param('slug') slug: string
-  ) {
+  async getBySlug(@Param('slug') slug: string) {
     return this.cardService.getBySlug(slug);
   }
 
   @Get('my')
-  async getMy(
-    @Req() req: RequestWithUser,
-    @Query() query: CardsQuery
-  ) {
+  async getMy(@Req() req: RequestWithUser, @Query() query: CardsQuery) {
     return this.cardService.getMy(req, query.pageSize, query.pageNumber);
   }
 

@@ -1,13 +1,13 @@
-import { Card } from "./card.interface";
+import { Card } from './card.interface';
 
 export interface Library {
-    id: string;
-    userId: string;
-    card: Card;
-    createdAt: Date;
+  id: string;
+  userId: string;
+  card: Card;
+  createdAt: Date;
 }
 
 export interface CreateLibraryItem {
-    userId: string;
-    cardId: string;
+  userId: string;
+  cardId: string;
 }

@@ -10,7 +10,7 @@ import { CardsDataResponseDto } from 'src/modules/card/dto/card.dto';
 export class CardRepository {
   constructor(
     private readonly prismaService: PrismaService,
-    private readonly cardItemRepository: CardItemRepository
+    private readonly cardItemRepository: CardItemRepository,
   ) {}
 
   async count(where: Prisma.CardWhereInput = {}) {
@@ -20,14 +20,13 @@ export class CardRepository {
   async findAll(
     where: Prisma.CardWhereInput = {},
     orderBy: Prisma.CardOrderByWithAggregationInput = {},
-    take: number = undefined
+    take: number = undefined,
   ): Promise<Card[]> {
-
     return this.prismaService.card.findMany({
       select: { ...this.select(), items: false },
       orderBy,
       where,
-      take
+      take,
     });
   }
 
@@ -41,26 +40,29 @@ export class CardRepository {
       where,
       skip: pageNumber,
       take: pageSize,
-      orderBy
+      orderBy,
     });
 
     const totalCount = await this.prismaService.card.count({ where });
     return this.paginator(cards, pageSize, pageNumber, totalCount);
   }
-  
+
   private paginator(
-    cards: Card[], 
-    pageSize: number, 
-    pageNumber: number, 
-    totalItemsCount: number
+    cards: Card[],
+    pageSize: number,
+    pageNumber: number,
+    totalItemsCount: number,
   ): CardsDataResponseDto {
     return {
-      cards: cards.map(card => ({ ...card, shareLink: this.shareLink(card.slug) })),
+      cards: cards.map((card) => ({
+        ...card,
+        shareLink: this.shareLink(card.slug),
+      })),
       pagination: {
         currentPage: pageNumber,
         pageSize: cards.length,
         totalItems: totalItemsCount,
-        totalPages: Math.ceil(totalItemsCount / pageSize)
+        totalPages: Math.ceil(totalItemsCount / pageSize),
       },
     };
   }
@@ -112,8 +114,8 @@ export class CardRepository {
     return await this.prismaService.card.update({
       select: this.select(),
       where: { id: card.id },
-      data: { views: { increment: 1 } }
-    })
+      data: { views: { increment: 1 } },
+    });
   }
 
   async deleteById(cardId: string, authorId: string): Promise<void> {

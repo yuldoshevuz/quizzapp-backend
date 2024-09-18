@@ -5,8 +5,6 @@ import {
   CreateCategory,
   UpdateCategory,
 } from './interfaces/category.interface';
-import { CreateCategoryDto } from 'src/modules/category/dto/create-category.dto';
-import { UpdateCategoryDto } from 'src/modules/category/dto/update-category.dto';
 import { Prisma } from '@prisma/client';
 
 @Injectable()

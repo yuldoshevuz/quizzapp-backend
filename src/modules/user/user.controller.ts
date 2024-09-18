@@ -12,7 +12,7 @@ import { CreateLibraryDto } from './library/dto/create-library.dto';
 export class UserController {
   constructor(
     private readonly userService: UserService,
-    private readonly libraryService: LibraryService
+    private readonly libraryService: LibraryService,
   ) {}
 
   @Get()
@@ -26,10 +26,7 @@ export class UserController {
   }
 
   @Post('library')
-  async create(
-    @Req() req: RequestWithUser,
-    @Body() dto: CreateLibraryDto
-  ) {
+  async create(@Req() req: RequestWithUser, @Body() dto: CreateLibraryDto) {
     return this.libraryService.createNewItem(req, dto);
   }
 

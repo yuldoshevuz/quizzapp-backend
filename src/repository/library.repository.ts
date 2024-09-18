@@ -11,12 +11,15 @@ export class LibraryRepository {
     private readonly cardRepository: CardRepository,
   ) {}
 
-  async findAll(userId: string, where: Prisma.LibraryWhereInput = {}): Promise<Library[]> {
+  async findAll(
+    userId: string,
+    where: Prisma.LibraryWhereInput = {},
+  ): Promise<Library[]> {
     return this.prismaService.library.findMany({
       where: { userId, ...where },
       orderBy: { createdAt: 'desc' },
       take: 10,
-      select: this.select()
+      select: this.select(),
     });
   }
 
@@ -27,18 +30,18 @@ export class LibraryRepository {
   async create(data: CreateLibraryItem) {
     await this.prismaService.library.create({
       select: this.select(),
-      data
+      data,
     });
   }
 
   async delete(authorId: string, cardId: string): Promise<void> {
     const existsCard = await this.prismaService.library.findFirst({
       where: {
-        AND: [ { cardId }, { userId: authorId } ]
-      }
+        AND: [{ cardId }, { userId: authorId }],
+      },
     });
 
-    if (!existsCard) throw new NotFoundException('Card not found your library')
+    if (!existsCard) throw new NotFoundException('Card not found your library');
 
     await this.prismaService.library.delete({
       where: { id: existsCard.id },
@@ -50,7 +53,7 @@ export class LibraryRepository {
       id: true,
       userId: true,
       card: { select: this.cardRepository.select() },
-      createdAt: true
-    }
+      createdAt: true,
+    };
   }
 }

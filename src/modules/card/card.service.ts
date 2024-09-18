@@ -33,7 +33,7 @@ export class CardService {
       if (!existsCategory)
         throw new BadRequestException('Category not available with this id');
     }
-    
+
     const newCard = await this.cardRepository.create({
       ...dto,
       authorId,
@@ -78,8 +78,16 @@ export class CardService {
     return null;
   }
 
-  async getAll(pageSize: number, pageNumber: number): Promise<CardsDataResponseDto> {
-    const result = await this.cardRepository.findWithPagination({ isPublic: true }, pageSize, pageNumber, { createdAt: 'desc' });
+  async getAll(
+    pageSize: number,
+    pageNumber: number,
+  ): Promise<CardsDataResponseDto> {
+    const result = await this.cardRepository.findWithPagination(
+      { isPublic: true },
+      pageSize,
+      pageNumber,
+      { createdAt: 'desc' },
+    );
 
     if (!result.cards.length) throw new NotFoundException('No cards found');
 
@@ -87,23 +95,39 @@ export class CardService {
   }
 
   async searchByTitle(searchValue: string): Promise<CardsDataResponseDto> {
-    const cards = await this.cardRepository.findAll({
-      OR: [
-        { title: { contains: searchValue, mode: 'insensitive' } },
-        { slug:  { contains: searchValue, mode: 'insensitive' } }
-      ],
-      isPublic: true
-    }, { createdAt: 'desc' }, 5);
+    const cards = await this.cardRepository.findAll(
+      {
+        OR: [
+          { title: { contains: searchValue, mode: 'insensitive' } },
+          { slug: { contains: searchValue, mode: 'insensitive' } },
+        ],
+        isPublic: true,
+      },
+      { createdAt: 'desc' },
+      5,
+    );
 
     if (!cards.length) throw new NotFoundException('No cards found');
 
-    return { cards: cards.map(card => ({ ...card, shareLink: this.shareLink(card.slug) })) };
+    return {
+      cards: cards.map((card) => ({
+        ...card,
+        shareLink: this.shareLink(card.slug),
+      })),
+    };
   }
 
-  async getMy(req: RequestWithUser, pageSize: number, pageNumber: number): Promise<CardsDataResponseDto> {
+  async getMy(
+    req: RequestWithUser,
+    pageSize: number,
+    pageNumber: number,
+  ): Promise<CardsDataResponseDto> {
     const authorId = req.user.id;
     const result = await this.cardRepository.findWithPagination(
-      { authorId }, pageSize, pageNumber, { createdAt: 'desc' }
+      { authorId },
+      pageSize,
+      pageNumber,
+      { createdAt: 'desc' },
     );
     if (!result.cards.length) throw new NotFoundException('No cards found');
 
@@ -111,24 +135,42 @@ export class CardService {
   }
 
   async getBySlug(slug: string): Promise<CardDataResponseDto> {
-    const card = await this.cardRepository.incrementCardViews(slug)
+    const card = await this.cardRepository.incrementCardViews(slug);
     return { card: { ...card, shareLink: this.shareLink(card.slug) } };
   }
 
   async getPopular(): Promise<CardsDataResponseDto> {
-    const cards = await this.cardRepository.findAll({ isPublic: true }, { views: 'desc' }, 10);
+    const cards = await this.cardRepository.findAll(
+      { isPublic: true },
+      { views: 'desc' },
+      10,
+    );
 
     if (!cards.length) throw new NotFoundException('No cards found');
 
-    return { cards: cards.map(card => ({ ...card, shareLink: this.shareLink(card.slug) })) };
+    return {
+      cards: cards.map((card) => ({
+        ...card,
+        shareLink: this.shareLink(card.slug),
+      })),
+    };
   }
 
   async getRecent(): Promise<CardsDataResponseDto> {
-    const cards = await this.cardRepository.findAll({ isPublic: true }, { createdAt: 'desc' }, 10)
+    const cards = await this.cardRepository.findAll(
+      { isPublic: true },
+      { createdAt: 'desc' },
+      10,
+    );
 
     if (!cards.length) throw new NotFoundException('No cards found');
 
-    return { cards: cards.map(card => ({ ...card, shareLink: this.shareLink(card.slug) })) };
+    return {
+      cards: cards.map((card) => ({
+        ...card,
+        shareLink: this.shareLink(card.slug),
+      })),
+    };
   }
 
   async getMyById(

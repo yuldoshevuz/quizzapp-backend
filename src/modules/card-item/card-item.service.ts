@@ -11,7 +11,6 @@ import {
 import { Card } from 'src/repository/interfaces/card.interface';
 import { CheckAnswerImageDto } from './dto/check-answer-image.dto';
 import { OcrService } from '../ocr/ocr.service';
-import * as path from 'path';
 import * as fs from 'fs';
 import { ValidationException } from 'src/common/exceptions/validation.exception';
 

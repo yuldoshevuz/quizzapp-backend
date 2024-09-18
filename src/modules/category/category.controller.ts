@@ -6,7 +6,6 @@ import {
   Param,
   Post,
   Put,
-  Query,
   Req,
 } from '@nestjs/common';
 import { CategoryService } from './category.service';
@@ -30,11 +29,7 @@ export class CategoryController {
   }
 
   @Get()
-  async getAllCategories(
-    @Req() req: RequestWithUser,
-    @Query('pageSize') pageSize: string,
-    @Query('pageNumber') pageNumber: string
-  ) {
+  async getAllCategories(@Req() req: RequestWithUser) {
     return this.categoryService.getAll(req);
   }
 
