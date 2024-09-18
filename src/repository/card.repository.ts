@@ -37,30 +37,25 @@ export class CardRepository {
     pageNumber: number = 0,
     orderBy: Prisma.CardOrderByWithAggregationInput = {},
   ): Promise<CardsDataResponseDto> {
-    const psz = Number.isNaN(pageSize)? 10 : pageSize;
-    const pnum = Number.isNaN(pageNumber)? 0 : pageNumber;
+    const cards = await this.prismaService.card.findMany({
+      where,
+      skip: pageNumber,
+      take: pageSize,
+      orderBy
+    });
 
-    const skip =  psz && pnum;
-    const take = psz || 10;
-    
-    const totalItemsCount = await this.prismaService.card.count({ where });
-  
-    const cards = await this.prismaService.card.findMany({ where, skip, take, orderBy });
-  
-    return this.pagination(cards, psz, pnum || 0, totalItemsCount);
+    const totalCount = await this.prismaService.card.count({ where });
+    return this.paginator(cards, pageSize, pageNumber, totalCount);
   }
   
-  private pagination(
+  private paginator(
     cards: Card[], 
     pageSize: number, 
     pageNumber: number, 
     totalItemsCount: number
   ): CardsDataResponseDto {
     return {
-      cards: cards.map(card => ({
-        ...card,
-        shareLink: this.shareLink(card.slug),
-      })),
+      cards: cards.map(card => ({ ...card, shareLink: this.shareLink(card.slug) })),
       pagination: {
         currentPage: pageNumber,
         pageSize: cards.length,

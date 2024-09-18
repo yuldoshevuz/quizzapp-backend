@@ -15,6 +15,7 @@ import { CreateCardDto } from './dto/create-card.dto';
 import { Auth } from '../auth/decorators/auth.decorator';
 import { UpdateCardDto } from './dto/update-card.dto';
 import { CreateCardItemDto } from '../card-item/dto/create-card-item.dto';
+import { CardsQuery } from './dto/card.dto';
 
 @Controller('card')
 @Auth()
@@ -31,10 +32,9 @@ export class CardController {
 
   @Get()
   async getAll(
-    @Query('pageSize') pageSize: string,
-    @Query('pageNumber') pageNumber: string
+    @Query() query: CardsQuery
   ) {
-    return this.cardService.getAll(+pageSize, +pageNumber);
+    return this.cardService.getAll(query.pageSize, query.pageNumber);
   }
 
   @Get('search')
@@ -62,10 +62,9 @@ export class CardController {
   @Get('my')
   async getMy(
     @Req() req: RequestWithUser,
-    @Query('pageSize') pageSize: string,
-    @Query('pageNumber') pageNumber: string
+    @Query() query: CardsQuery
   ) {
-    return this.cardService.getMy(req, +pageSize, +pageNumber);
+    return this.cardService.getMy(req, query.pageSize, query.pageNumber);
   }
 
   @Get('my/:cardId')
