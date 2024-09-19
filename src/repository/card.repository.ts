@@ -38,7 +38,7 @@ export class CardRepository {
   ): Promise<CardsDataResponseDto> {
     const cards = await this.prismaService.card.findMany({
       where,
-      skip: pageNumber + 1,
+      skip: pageSize * pageNumber,
       take: pageSize,
       orderBy,
     });
