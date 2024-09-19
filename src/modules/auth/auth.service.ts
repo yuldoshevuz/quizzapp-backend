@@ -8,8 +8,6 @@ import { ValidationException } from 'src/common/exceptions/validation.exception'
 
 @Injectable()
 export class AuthService {
-  BASE_URL: string;
-
   constructor(
     private readonly jwtService: JwtService,
     private readonly userRepository: UserRepository,
