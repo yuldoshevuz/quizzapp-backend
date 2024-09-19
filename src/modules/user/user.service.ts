@@ -23,7 +23,7 @@ export class UserService {
 
   async getProfile(req: RequestWithUser): Promise<UserDataResponseDto> {
     const user = req.user;
-    const photo = `${this.BASE_URL}/user/photo`;
+    const photo = `${this.BASE_URL}/api/user/photo`;
 
     return { user: { ...user, photo } };
   }
